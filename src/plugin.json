@@ -1,0 +1,10 @@
+{
+  "id": "connector-plugin",
+  "supportedversions": [2024004, 2025001],
+  "info": {
+    "name": "connector-plugin",
+    "version": "0.0.1",
+    "description": "A plugin for Mcreator that adds the Sinytra Connector mod, which may be needed for other API plugins",
+    "author": "300f20t"
+  }
+}

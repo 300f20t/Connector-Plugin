@@ -1,0 +1,106 @@
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.StandardCopyOption
+
+class PluginConfig {
+	final String pluginName = "connector-plugin"
+	final String windowsPath = "C:/Program Files/Pylo/MCreator/"
+	final String macLinuxPath = "/Applications/MCreator.app/Contents/MacOS/mcreator"
+
+	private final String osName = System.getProperty("os.name").toLowerCase()
+
+	String getArchiveName() { "${pluginName}.zip" }
+
+	boolean isWindows() { osName.contains('win') }
+
+    static Path getPluginsDir() {
+		Path.of(System.getProperty("user.home"), ".mcreator", "plugins")
+	}
+
+	String getMCreatorPath() {
+		isWindows() ? windowsPath : macLinuxPath
+	}
+
+	void validatePaths() {
+		if (!Files.exists(Path.of(getMCreatorPath()))) {
+			println "Warning: MCreator not found at: ${getMCreatorPath()}"
+		}
+	}
+}
+
+def config = new PluginConfig()
+config.validatePaths()
+
+tasks.register('packagePlugin', Zip) {
+	group = "MCreator Plugin"
+	description = "Creates plugin distribution package"
+
+	from 'src'
+	archiveFileName = config.archiveName
+	destinationDirectory = file('build/')
+
+	doLast {
+		println "Created plugin package: ${archiveFile.get()}"
+	}
+}
+
+tasks.register('installPlugin') {
+	group = "MCreator Plugin"
+	description = "Installs plugin to MCreator plugins directory"
+	dependsOn packagePlugin
+
+	doLast {
+		try {
+			def source = file("build/${config.archiveName}")
+			def destDir = config.pluginsDir.toFile()
+
+			destDir.mkdirs()
+			Files.copy(
+					source.toPath(),
+					destDir.toPath().resolve(config.archiveName),
+					StandardCopyOption.REPLACE_EXISTING
+			)
+
+			println "Plugin installed to: ${destDir.absolutePath}"
+		} catch (Exception e) {
+			println "Installation failed: ${e.message}"
+			throw e
+		}
+	}
+}
+
+tasks.register('runMCreator') {
+	group = "MCreator Plugin"
+	description = "Launches MCreator"
+	dependsOn installPlugin
+
+	doLast {
+		try {
+			def cmd = config.isWindows() ?
+					['cmd', '/c', 'start', 'mcreator.exe'] :
+					[config.macLinuxPath]
+
+			exec {
+				workingDir config.getMCreatorPath()
+				commandLine cmd
+			}
+			println "MCreator launched successfully"
+		} catch (Exception e) {
+			println "Failed to launch MCreator: ${e.message}"
+			println "Verify installation at: ${config.getMCreatorPath()}"
+		}
+	}
+}
+
+tasks.register('showConfig') {
+	group = "MCreator Plugin"
+	description = "Displays current configuration"
+
+	doLast {
+		println """Current settings:
+        OS: ${System.getProperty("os.name")}
+        Plugin: ${config.archiveName}
+        MCreator Path: ${config.getMCreatorPath()}
+        Plugins Dir: ${config.pluginsDir}"""
+	}
+}
