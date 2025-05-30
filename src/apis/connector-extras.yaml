@@ -1,0 +1,15 @@
+neoforge-1.21.1:
+  gradle: |
+    repositories {
+      maven {
+        url = "https://www.cursemaven.com"
+      }
+    }
+    
+    dependencies {
+        implementation fg.deobf("curse.maven:connector-extras-913445:5618470")
+    }
+  update_files:
+    - ~
+
+name: "Connector Extras"
