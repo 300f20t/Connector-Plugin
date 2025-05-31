@@ -2,14 +2,13 @@ neoforge-1.21.1:
   gradle: |
     repositories {
       maven {
-        url = "https://www.cursemaven.com"
+        url = "https://maven.su5ed.dev/releases"
       }
     }
     
     dependencies {
-        implementation fg.deobf("curse.maven:forgified-fabric-api-889079:6496441")
+        implementation "org.sinytra.forgified-fabric-api:forgified-fabric-api:0.115.6+2.1.0+1.21.1"
     }
   update_files:
     - ~
-
 name: "Forgified Fabric API"

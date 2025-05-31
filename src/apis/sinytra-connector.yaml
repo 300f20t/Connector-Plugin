@@ -2,14 +2,13 @@ neoforge-1.21.1:
   gradle: |
     repositories {
       maven {
-        url = "https://www.cursemaven.com"
+        url = "https://maven.su5ed.dev/releases"
       }
     }
     
     dependencies {
-        implementation fg.deobf("curse.maven:sinytra-connector-890127:6509753")
+        implementation "org.sinytra.adapter:userdev:1.2.1-SNAPSHOT"
     }
   update_files:
     - ~
-
 name: "Sinytra Connector"

@@ -7,9 +7,8 @@ neoforge-1.21.1:
     }
     
     dependencies {
-        implementation fg.deobf("curse.maven:connector-extras-913445:5618470")
+        implementation "curse.maven:connector-extras-913445:5618470"
     }
   update_files:
     - ~
-
 name: "Connector Extras"
